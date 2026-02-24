@@ -1,20 +1,19 @@
-import express from "express";
-import OpenAI from "openai";
-import path from "path";
-import { fileURLToPath } from "url";
+const express = require("express");
+const OpenAI = require("openai");
+const path = require("path");
 
 const app = express();
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // <-- KEY LIVES HERE
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message, context } = req.body;
+    const { message, context } = req.body || {};
 
-    if (!message) {
+    if (!message || !message.trim()) {
       return res.status(400).json({ error: "Message required" });
     }
 
@@ -28,21 +27,17 @@ app.post("/api/chat", async (req, res) => {
       temperature: 0.7,
     });
 
-    res.json({
-      reply: completion.choices[0].message.content,
-    });
+    const reply = completion.choices?.[0]?.message?.content || "";
+    return res.json({ reply });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "OpenAI error" });
+    return res.status(500).json({ error: "OpenAI error" });
   }
 });
 
 // Serve React build (Render)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 app.use(express.static(path.join(__dirname, "build")));
-app.get("*", (_, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
