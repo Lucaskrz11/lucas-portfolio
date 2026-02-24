@@ -307,7 +307,6 @@ Instructions:
   const examplePrompts = [
     "What tech skills does Lucas have?",
     "Summarize Lucas’s work experience.",
-    "What are Lucas’s top projects and what did he build?",
     "What is Lucas studying and when does he graduate?",
     "What kind of roles is Lucas looking for?",
   ];
@@ -344,7 +343,7 @@ Instructions:
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Example: What projects has Lucas built with React or Python?"
+            placeholder="Example: What skills does Lucas have?"
             disabled={loading}
           />
 
